@@ -174,6 +174,7 @@ onMounted(() => {
   animation: revealSheet 0.7s ease-in-out 0.2s forwards;
 }
 .email-body {
+  max-width: 600px !important;
   width: calc(80vw - 50px);
 }
 .highlight {
