@@ -33,14 +33,11 @@ const body = parsedEmail?.body;
 
 const cc = parsedEmail?.cc;
 const xCc = parsedEmail?.x_cc;
-
 onMounted(() => {
-  if (!emailSheetRef.value) return;
+  if (!emailSheetRef.value || !store?.searchedValue) return;
   let emailContent = emailSheetRef.value.innerHTML;
   const regex = new RegExp(`(${store.searchedValue})`, "gi");
-  if (
-    regex.test(emailContent)
-  ) {
+  if (regex.test(emailContent)) {
     emailContent = emailContent.replace(
       regex,
       `<mark class="highlight">${store.searchedValue}</mark>`
@@ -55,7 +52,9 @@ onMounted(() => {
     ref="emailSheetRef"
     class="email-sheet opacity-0 grid overflow-hidden pt-[20px] pl-[25px] pb-[20px] pr-[25px] mt-[5vh] mb-[5vh] mx-[auto] w-[80%] max-w-[80%] md:max-w-[650px] min-h-[120vh] bg-white"
   >
-    <header class="flex flex-col justify-center align-center">
+    <header
+      class="flex flex-col justify-center align-center w-[80%] max-w-[80%] md:max-w-[650px]"
+    >
       <div v-if="id" class="mb-[10px]">
         <p class="text-black text-[10px]">
           {{ id }}
@@ -107,7 +106,7 @@ onMounted(() => {
       </div>
     </header>
 
-    <article class="mt-[20px] max-w-[100%]">
+    <article class="email-body mt-[20px] max-w-[600px]]">
       <div v-if="body">
         <p class="text-black text-[14px]">
           {{ body }}
@@ -174,7 +173,9 @@ onMounted(() => {
 .email-sheet {
   animation: revealSheet 0.7s ease-in-out 0.2s forwards;
 }
-
+.email-body {
+  width: calc(80vw - 50px);
+}
 .highlight {
   background-color: orange;
   color: black;
@@ -185,6 +186,9 @@ onMounted(() => {
     animation: revealSheetMobile 0.7s ease-in-out 0.2s forwards;
 
     min-width: 95% !important;
+  }
+  .email-body {
+    width: calc(95vw - 50px);
   }
 }
 </style>
