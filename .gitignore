@@ -30,3 +30,4 @@ Indexer/noRoutine.txt
 #Visualizer
 Visualizer/node_modules
 Visualizer/.env
+Visualizer/.vscode
