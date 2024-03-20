@@ -17,32 +17,32 @@ func FetchCreateZincIndex() {
 
 	body := constants.EMAIL_INDEXER_INDEX
 
-	jsonPayload, err := json.Marshal(body)
-	if err != nil {
-		fmt.Println("Error encoding JSON:", err)
+	jsonBody, parserError := json.Marshal(body)
+	if parserError != nil {
+		fmt.Println("Error when parsing JSON:", parserError)
 		return
 	}
 
 	url := constants.SERVER + constants.ENDPOINT_INDEX
-	req, err := http.NewRequest(constants.METHOD_POST, url, bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		fmt.Println("Error creating request:", err)
+	request, requestError := http.NewRequest(constants.METHOD_POST, url, bytes.NewBuffer(jsonBody))
+	if requestError != nil {
+		fmt.Println("Error creating request:", requestError)
 		return
 	}
 
-	req.SetBasicAuth(username, password)
-	req.Header.Set("Content-Type", "application/json")
+	request.SetBasicAuth(username, password)
+	request.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error sending request:", err)
+	response, responseError := client.Do(request)
+	if responseError != nil {
+		fmt.Println("Error sending request:", responseError)
 		return
 	}
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		fmt.Println("Error:", resp.Status)
+	if response.StatusCode != http.StatusOK {
+		fmt.Println("Error:", response.Status)
 		return
 	}
 }
@@ -56,34 +56,34 @@ func FetchZing(allEmails []models.Email) {
 	body.Index = constants.INDEXER_NAME
 	body.Records = allEmails
 
-	jsonPayload, err := json.Marshal(body)
-	if err != nil {
-		fmt.Println("Error encoding JSON:", err)
+	jsonBody, parserError := json.Marshal(body)
+	if parserError != nil {
+		fmt.Println("Error encoding JSON:", parserError)
 		return
 	}
 
 	url := constants.SERVER + constants.ENDPOINT
-	req, err := http.NewRequest(constants.METHOD_POST, url, bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		fmt.Println("Error creating request:", err)
+	request, requestError := http.NewRequest(constants.METHOD_POST, url, bytes.NewBuffer(jsonBody))
+	if requestError != nil {
+		fmt.Println("Error creating request:", requestError)
 		return
 	}
 
-	req.SetBasicAuth(username, password)
-	req.Header.Set("Content-Type", "application/json")
+	request.SetBasicAuth(username, password)
+	request.Header.Set("Content-Type", "application/json")
 
 	start := time.Now()
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Error sending request:", err)
+	response, responseError := client.Do(request)
+	if responseError != nil {
+		fmt.Println("Error sending request:", responseError)
 		return
 	}
-	defer resp.Body.Close()
+	defer response.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		fmt.Println("Error:", resp.Status)
+	if response.StatusCode != http.StatusOK {
+		fmt.Println("Error:", response.Status)
 		return
 	}
 
