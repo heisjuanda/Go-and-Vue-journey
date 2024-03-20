@@ -6,8 +6,8 @@ import (
 
 const FILE_NAME string = "./enron_mail_20110402/maildir"
 
-const REFERENCE_FIRST_DATE string = "Mon, 2 Jan 2006 15:04:05 -0700 (MST)"
-const REFERENCE_SECOND_DATE string = "Mon, 01 Jan 2006 15:04:05 -0700 (MST)"
+const REFERENCE_FIRST_DATE string = "Mon, 01 Jan 2006 15:04:05 -0700 (MST)"
+const REFERENCE_SECOND_DATE string = "Mon, 2 Jan 2006 15:04:05 -0700 (MST)"
 
 const EMAILS_AMOUNT int = 658252
 
