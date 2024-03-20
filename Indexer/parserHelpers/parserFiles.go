@@ -3,7 +3,6 @@ package parserhelpers
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"mail-indexer/constants"
 	"mail-indexer/models"
 	"os"
@@ -19,14 +18,14 @@ var (
 )
 
 // given a filePath, reads the content line per line
-func readFileLineByLine(filePath string, wg *sync.WaitGroup, sem chan struct{}) {
+func readFileLineByLine(filePath string, wg *sync.WaitGroup, semaphore chan struct{}) {
 	defer wg.Done()
-	sem <- struct{}{}        // add worker
-	defer func() { <-sem }() // remove worker
+	semaphore <- struct{}{}
+	defer func() { <-semaphore }()
 
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Printf("Error opening file %s: %s", filePath, err)
+	file, fileError := os.Open(filePath)
+	if fileError != nil {
+		fmt.Printf("Error opening file %s: %s", filePath, fileError)
 		return
 	}
 	defer file.Close()
@@ -42,18 +41,18 @@ func readFileLineByLine(filePath string, wg *sync.WaitGroup, sem chan struct{}) 
 	}
 	createSubEmails(&email)
 	appendEmail(&email)
-	if err := scanner.Err(); err != nil {
-		log.Printf("Error reading file %s: %s", filePath, err)
+	if scannerError := scanner.Err(); scannerError != nil {
+		fmt.Printf("Error reading file %s: %s", filePath, scannerError)
 	}
 }
 
 // checks if folderPath is a folder or a file to read it
-func ExploreFolder(folderPath string, wg *sync.WaitGroup, sem chan struct{}) {
+func ExploreFolder(folderPath string, wg *sync.WaitGroup, semaphore chan struct{}) {
 	defer wg.Done()
 
-	files, err := os.ReadDir(folderPath)
-	if err != nil {
-		log.Printf("Error reading folder %s: %s", folderPath, err)
+	files, fileError := os.ReadDir(folderPath)
+	if fileError != nil {
+		fmt.Printf("Error reading folder %s: %s", folderPath, fileError)
 		return
 	}
 	for _, file := range files {
@@ -61,10 +60,10 @@ func ExploreFolder(folderPath string, wg *sync.WaitGroup, sem chan struct{}) {
 
 		if file.IsDir() {
 			wg.Add(1)
-			ExploreFolder(filePath, wg, sem)
+			ExploreFolder(filePath, wg, semaphore)
 		} else {
 			wg.Add(1)
-			go readFileLineByLine(filePath, wg, sem)
+			go readFileLineByLine(filePath, wg, semaphore)
 		}
 	}
 }
@@ -75,14 +74,13 @@ func ProcessFiles(fileNames string) {
 	const maxWorkers = constants.MAX_WORKERS
 
 	start := time.Now()
-	// semaphore & maxLength of channel
-	sem := make(chan struct{}, maxWorkers)
+	semaphore := make(chan struct{}, maxWorkers)
 	wg.Add(1)
-	go ExploreFolder(fileNames, &wg, sem)
+	go ExploreFolder(fileNames, &wg, semaphore)
 
 	cpuProfile, err := os.Create("cpu.prof")
 	if err != nil {
-		log.Fatal("could not create CPU profile: ", err)
+		fmt.Println("could not create CPU profile: ", err)
 	}
 	defer cpuProfile.Close()
 	pprof.StartCPUProfile(cpuProfile)
@@ -90,13 +88,13 @@ func ProcessFiles(fileNames string) {
 
 	memProfile, err := os.Create("mem_profile.prof")
 	if err != nil {
-		log.Fatal("Could not create memory profile: ", err)
+		fmt.Println("Could not create memory profile: ", err)
 	}
 	defer memProfile.Close()
 	defer pprof.WriteHeapProfile(memProfile)
 
 	wg.Wait()
-	close(sem)
+	close(semaphore)
 	fmt.Println("start index: ", start)
 	fmt.Println("end index: ", time.Since(start))
 	fmt.Print("total emails: ", len(allEmails))
