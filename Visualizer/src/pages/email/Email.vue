@@ -82,9 +82,9 @@ onMounted(() => {
 
     <header class="mt-[30px] mb-[20px] flex flex-col align-center">
       <div>
-        <h3 v-if="subject" class="text-center mb-[30px] text-black text-[16px]">
-          {{ subject }}
-        </h3>
+        <p v-if="subject" class="text-center mb-[30px] text-black text-[16px]">
+          <b>{{ subject }}</b>
+        </p>
       </div>
 
       <div
