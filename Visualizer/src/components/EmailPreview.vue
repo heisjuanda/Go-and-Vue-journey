@@ -24,8 +24,8 @@ if (emailContent.value?._source) {
       <div class="lid one"></div>
       <div class="lid two"></div>
       <div class="envelope"></div>
-      <div class="letter" v-if="searchValue">
-        <p>{{ searchValue }}</p>
+      <div class="letter">
+        <p>{{ searchValue || "..." }}</p>
       </div>
     </div>
   </RouterLink>
