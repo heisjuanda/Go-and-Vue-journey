@@ -24,13 +24,15 @@ func SetCorsProtocol(handler http.Handler) http.Handler {
 }
 
 func SearchHandler(w http.ResponseWriter, request *http.Request) {
-
-	searchTerm := request.URL.Query().Get("term")
-	if searchTerm == "" {
+	searchType := request.URL.Query().Get("type")
+	if searchType == "" {
 		http.Error(w, "Search term is empty", http.StatusBadRequest)
 		fmt.Println("Search term is empty")
 		return
 	}
+
+	searchTerm := request.URL.Query().Get("term")
+
 	page := request.URL.Query().Get("page")
 	if page == "" {
 		page = "0"
@@ -42,7 +44,7 @@ func SearchHandler(w http.ResponseWriter, request *http.Request) {
 
 	query := fmt.Sprintf(
 		`{
-        	"search_type": "matchphrase",
+        	"search_type": "%s",
         	"query": {
             	"term": "%s"
         	},
@@ -51,10 +53,10 @@ func SearchHandler(w http.ResponseWriter, request *http.Request) {
         	"max_results": 20,
         	"_source": []
     	}`,
-		searchTerm, order, page)
+		searchType, searchTerm, order, page)
 
-	requestUrl := constants.Server + constants.Endpoint
-	zincRequest, zincError := http.NewRequest(constants.MethodPost, requestUrl, strings.NewReader(query))
+	requestUrl := constants.ZINCSEARCH_SERVER + "/" + constants.ZINCSEARCH_ENDPOINT
+	zincRequest, zincError := http.NewRequest(constants.METHOD_POST, requestUrl, strings.NewReader(query))
 	if zincError != nil {
 		if urlErr, ok := zincError.(*url.Error); ok && urlErr.Timeout() {
 			fmt.Println("Request timed out:", zincError)
@@ -69,10 +71,10 @@ func SearchHandler(w http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	zincRequest.SetBasicAuth(constants.UseName, constants.Password)
+	zincRequest.SetBasicAuth(constants.ZINCSEARCH_USER_NAME, constants.ZINCSEARCH_PASSWORD)
 
 	zincRequest.Header.Set("Content-Type", "application/json")
-	zincRequest.Header.Set("User-Agent", constants.InfoBrowsers)
+	zincRequest.Header.Set("User-Agent", constants.INFO_BROWSERS)
 
 	zincResponse, zincResponseError := http.DefaultClient.Do(zincRequest)
 	if zincResponseError != nil {

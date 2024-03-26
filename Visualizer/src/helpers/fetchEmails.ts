@@ -9,8 +9,17 @@ import {
   PASSWORD,
 } from "../constants/constants";
 
-const search = async (searchTerm: string, page: string, orderDate: string) => {
+const search = async (
+  searchTerm: string,
+  page: string,
+  orderDate: string,
+  isSearching: boolean = false
+) => {
   const url = new URL(`${SERVER}${ENDPOINT}`);
+  isSearching
+    ? url.searchParams.append("type", "matchphrase")
+    : url.searchParams.append("type", "matchall");
+  url.searchParams.append("term", searchTerm);
   url.searchParams.append("term", searchTerm);
   url.searchParams.append("from", page);
   url.searchParams.append("order", orderDate);
