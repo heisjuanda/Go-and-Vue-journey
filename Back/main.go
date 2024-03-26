@@ -12,12 +12,12 @@ import (
 func main() {
 	router := chi.NewRouter()
 
-	router.Get(constants.MyEndpoint, helpers.SearchHandler)
+	router.Get("/"+constants.SEARCH_ENDPOINT, helpers.SearchHandler)
 	handler := helpers.SetCorsProtocol(router)
 
-	initText := fmt.Sprintf("Server started on :%s", constants.MyServerPort)
+	initText := fmt.Sprintf("Server started on :%s", constants.SEARCH_SERVER_PORT)
 	fmt.Println(initText)
 
-	listenAndServeText := fmt.Sprintf(":%s", constants.MyServerPort)
+	listenAndServeText := fmt.Sprintf(":%s", constants.SEARCH_SERVER_PORT)
 	http.ListenAndServe(listenAndServeText, handler)
 }
