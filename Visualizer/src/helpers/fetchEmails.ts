@@ -7,6 +7,8 @@ import {
   SERVER,
   USER,
   PASSWORD,
+  MATCH_PHRASE,
+  MATCH_ALL,
 } from "../constants/constants";
 
 const search = async (
@@ -17,8 +19,8 @@ const search = async (
 ) => {
   const url = new URL(`${SERVER}${ENDPOINT}`);
   isSearching
-    ? url.searchParams.append("type", "matchphrase")
-    : url.searchParams.append("type", "matchall");
+    ? url.searchParams.append("type", MATCH_PHRASE)
+    : url.searchParams.append("type", MATCH_ALL);
   url.searchParams.append("term", searchTerm);
   url.searchParams.append("term", searchTerm);
   url.searchParams.append("from", page);
