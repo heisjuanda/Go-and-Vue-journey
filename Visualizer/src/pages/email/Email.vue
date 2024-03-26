@@ -35,15 +35,19 @@ const cc = parsedEmail?.cc;
 const xCc = parsedEmail?.x_cc;
 onMounted(() => {
   if (!emailSheetRef.value || !store?.searchedValue) return;
-  let emailContent = emailSheetRef.value.innerHTML;
-  const regex = new RegExp(`(${store.searchedValue})`, "gi");
-  if (regex.test(emailContent)) {
-    emailContent = emailContent.replace(
-      regex,
-      `<mark class="highlight">${store.searchedValue}</mark>`
-    );
+  const allFields = emailSheetRef.value.querySelectorAll("p");
+  if (!allFields) return;
+  for (const field of allFields) {
+    let emailContent = field.innerHTML;
+    const regex = new RegExp(`(${store.searchedValue})`, "gi");
+    if (regex.test(emailContent)) {
+      emailContent = emailContent.replace(
+        regex,
+        `<mark class="highlight">${store.searchedValue}</mark>`
+      );
+    }
+    field.innerHTML = emailContent;
   }
-  emailSheetRef.value.innerHTML = emailContent;
 });
 </script>
 
