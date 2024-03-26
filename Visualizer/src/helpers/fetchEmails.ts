@@ -22,8 +22,7 @@ const search = async (
     ? url.searchParams.append("type", MATCH_PHRASE)
     : url.searchParams.append("type", MATCH_ALL);
   url.searchParams.append("term", searchTerm);
-  url.searchParams.append("term", searchTerm);
-  url.searchParams.append("from", page);
+  url.searchParams.append("page", page);
   url.searchParams.append("order", orderDate);
 
   try {

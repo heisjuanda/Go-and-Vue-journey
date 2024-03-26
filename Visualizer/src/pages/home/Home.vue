@@ -29,7 +29,7 @@ const hasValidSearch = computed(
 
 const handleResetPagination = () => {
   store.setHasMoreResults(true);
-  store.setPagination(-store.pagination);
+  store.resetPagination();
 };
 
 const handleSearch = async () => {
@@ -45,6 +45,8 @@ const handleSearch = async () => {
   isLoading.value = true;
   const oldSearchedTerm = store.searchedValue;
   store.setSearchedValue(searchValue.value);
+
+  if (searchValue.value !== oldSearchedTerm) handleResetPagination();
 
   const hitsInformation: Hits | undefined = await search(
     searchValue.value,
@@ -83,29 +85,17 @@ const handleSearch = async () => {
     Array.isArray(store.fetchedEmails) &&
     allResults.length > 0
   ) {
-    if (store.fetchedEmails.length > 0 && store.pagination > 0) {
-      store.setFetchedEmails([...store.fetchedEmails, ...allResults]);
-    } else {
-      store.setFetchedEmails(allResults);
-      if (hitsInformation?.total?.value)
-        store.setIsEmailResponseForPagination(
-          allResults.length < hitsInformation?.total?.value
-        );
-    }
+    store.setFetchedEmails(allResults);
+    if (hitsInformation?.total?.value)
+      store.setIsEmailResponseForPagination(
+        allResults.length < hitsInformation?.total?.value
+      );
     isLoading.value = false;
     return;
   }
 
-  if (
-    searchValue.value === oldSearchedTerm &&
-    store.pagination !== 0 &&
-    Array.isArray(store.fetchedEmails) &&
-    store.fetchedEmails?.length > 0
-  ) {
-    store.setFetchedEmails([...store.fetchedEmails, ...allResults]);
-  } else {
+  if (Array.isArray(allResults) && allResults?.length > 0) {
     store.setFetchedEmails(allResults);
-    handleResetPagination();
     if (hitsInformation?.total?.value)
       store.setIsEmailResponseForPagination(
         allResults.length < hitsInformation?.total?.value

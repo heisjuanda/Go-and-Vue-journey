@@ -1,6 +1,7 @@
 import { reactive } from "vue";
 
 import { Hit } from "./types/emailTypes";
+import { PAGINATION_VALUE } from "./constants/constants";
 
 interface Store {
   fetchedEmails: Hit[] | undefined | null;
@@ -11,6 +12,7 @@ interface Store {
   setIsSearching(isSearching: boolean): void;
   pagination: number;
   setPagination(pagination: number): void;
+  resetPagination(): void;
   hasMoreResults: boolean;
   setHasMoreResults(hasMoreResults: boolean): void;
   isEmailResponseForPagination: boolean;
@@ -32,9 +34,12 @@ const store: Store = reactive({
   setIsSearching(isSearching: boolean) {
     store.isSearching = isSearching;
   },
-  pagination: 0,
+  pagination: 20,
   setPagination(pagination: number) {
     store.pagination += pagination;
+  },
+  resetPagination() {
+    store.pagination = PAGINATION_VALUE;
   },
   hasMoreResults: true,
   setHasMoreResults(hasMoreResults: boolean) {

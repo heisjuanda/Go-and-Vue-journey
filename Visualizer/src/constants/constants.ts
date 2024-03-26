@@ -1,4 +1,4 @@
-export const PAGINATION_VALUE = 21;
+export const PAGINATION_VALUE = 20;
 export const MATCH_PHRASE = "matchphrase";
 export const MATCH_ALL = "matchall";
 export const METHOD_GET = "GET";
