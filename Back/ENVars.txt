@@ -1,0 +1,9 @@
+ADD THESE INTO THE CONSOLE BEFORE RUN THIS BACK
+
+export ZINCSEARCH_USER_NAME="admin"
+export ZINCSEARCH_PASSWORD="Complexpass#123"
+export INDEX_NAME="email-indexer"
+export ZINCSEARCH_SERVER="http://localhost:4080"
+export ZINCSEARCH_ENDPOINT="api/email-indexer/_search"
+export SEARCH_SERVER_PORT="8080" 
+export SEARCH_ENDPOINT="search"
