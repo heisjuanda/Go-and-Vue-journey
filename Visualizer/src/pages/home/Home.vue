@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 
 import store from "../../Store";
 
@@ -22,8 +22,6 @@ const notFound = ref<boolean>(false);
 
 const hasValidSearch = computed(
   () =>
-    searchValue.value &&
-    store.isSearching &&
     !isLoading.value &&
     Array.isArray(store.fetchedEmails) &&
     store.fetchedEmails.length > 0
@@ -35,13 +33,12 @@ const handleResetPagination = () => {
 };
 
 const handleSearch = async () => {
+  let isUserSearching = true;
   if (!searchValue.value || searchValue.value.length < 2) {
-    store.setFetchedEmails([]);
-    handleResetPagination();
     store.setIsEmailResponseForPagination(true);
     isLoading.value = false;
     notFound.value = false;
-    return;
+    isUserSearching = false;
   }
 
   store.setIsSearching(true);
@@ -52,7 +49,8 @@ const handleSearch = async () => {
   const hitsInformation: Hits | undefined = await search(
     searchValue.value,
     String(store.pagination),
-    store.order ? "-" : ""
+    store.order ? "-" : "",
+    isUserSearching
   );
   let allResults: Hit[] | undefined | null = [];
   if (hitsInformation?.hits) allResults = hitsInformation.hits;
@@ -77,6 +75,24 @@ const handleSearch = async () => {
     store.setIsEmailResponseForPagination(true);
     isLoading.value = false;
     notFound.value = true;
+    return;
+  }
+
+  if (
+    !isUserSearching &&
+    Array.isArray(store.fetchedEmails) &&
+    allResults.length > 0
+  ) {
+    if (store.fetchedEmails.length > 0 && store.pagination > 0) {
+      store.setFetchedEmails([...store.fetchedEmails, ...allResults]);
+    } else {
+      store.setFetchedEmails(allResults);
+      if (hitsInformation?.total?.value)
+        store.setIsEmailResponseForPagination(
+          allResults.length < hitsInformation?.total?.value
+        );
+    }
+    isLoading.value = false;
     return;
   }
 
@@ -110,6 +126,11 @@ watch(searchValue, (element) => {
     handleResetPagination();
     notFound.value = false;
   }
+});
+
+onMounted(() => {
+  if (Array.isArray(store.fetchedEmails) && store.fetchedEmails.length < 1)
+    handleSearch();
 });
 </script>
 
