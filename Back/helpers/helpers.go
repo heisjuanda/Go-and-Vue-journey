@@ -34,8 +34,8 @@ func SearchHandler(w http.ResponseWriter, request *http.Request) {
 	searchTerm := request.URL.Query().Get("term")
 
 	page := request.URL.Query().Get("page")
-	if page == "" {
-		page = "0"
+	if page == "" || page == "0" {
+		page = "20"
 	}
 	order := request.URL.Query().Get("order")
 	if len(order) > 2 {
@@ -49,8 +49,8 @@ func SearchHandler(w http.ResponseWriter, request *http.Request) {
             	"term": "%s"
         	},
 			"sort_fields": ["%sdate"],
-        	"from": %s,
-        	"max_results": 20,
+        	"from": 0,
+        	"max_results": %s,
         	"_source": []
     	}`,
 		searchType, searchTerm, order, page)
