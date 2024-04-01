@@ -82,9 +82,14 @@ onMounted(() => {
 
     <header class="mt-[30px] mb-[20px] flex flex-col align-center">
       <div>
-        <p v-if="subject" class="text-center mb-[30px] text-black text-[16px]">
-          <b>{{ subject }}</b>
-        </p>
+        <b>
+          <p
+            v-if="subject"
+            class="text-center mb-[30px] text-black text-[16px]"
+          >
+            {{ subject }}
+          </p>
+        </b>
       </div>
 
       <div
@@ -97,9 +102,9 @@ onMounted(() => {
           "
           class="mb-[5px] flex flex-row flex-wrap gap-[4px] text-[12px]"
         >
-          <p class="text-black">
-            <b>{{ lastHeaderDetails.detailName }}:</b>
-          </p>
+          <b>
+            <p class="text-black">{{ lastHeaderDetails.detailName }}:</p>
+          </b>
           <p v-if="lastHeaderDetails.detailFirstValue" class="text-black">
             {{ lastHeaderDetails.detailFirstValue }}
           </p>
@@ -120,9 +125,9 @@ onMounted(() => {
 
     <footer class="mt-[20px]">
       <div v-if="cc || xCc" class="flex flex-col gap-[5px]">
-        <p class="text-black text-[12px]">
-          <b>cc:</b>
-        </p>
+        <b>
+          <p class="text-black text-[12px]">cc:</p>
+        </b>
         <p v-if="cc" class="text-black text-[12px]">
           {{ cc }}
         </p>
@@ -140,9 +145,9 @@ onMounted(() => {
           class="mb-[10px] flex flex-col gap-[5px]"
         >
           <div class="flex flex-row gap-[4px]">
-            <p class="text-black text-[12px]">
-              <b>{{ details.detailName }}:</b>
-            </p>
+            <b>
+              <p class="text-black text-[12px]">{{ details.detailName }}:</p>
+            </b>
             <p class="text-black text-[12px]">
               {{ details.detailValue }}
             </p>
