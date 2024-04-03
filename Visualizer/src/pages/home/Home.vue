@@ -160,7 +160,7 @@ onMounted(() => {
         <li v-for="(emailContent, index) in store.fetchedEmails" :key="index">
           <EmailPreview
             v-model:searchTerm="searchValue"
-            :emailContent="emailContent"
+            :emailContent="emailContent?._source?.message_id"
           />
         </li>
       </ul>
