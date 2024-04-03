@@ -1,10 +1,12 @@
 package parserhelpers
 
 import (
+	"fmt"
 	"mail-indexer/constants"
 	"mail-indexer/models"
 	fetchzinc "mail-indexer/zincHelpers"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -87,6 +89,12 @@ func ParseLineMessage(line string, email *models.Email, hasSubEmails *bool) {
 	}
 }
 
+// returns a new id with prefix .JavaSubEmail
+func generateSubEmailId(subEmailIndex int, emailId string) string {
+	newId := fmt.Sprintf(".JavaSubEmail.%s>", strconv.Itoa(subEmailIndex))
+	return strings.Replace(emailId, ">", newId, 1)
+}
+
 // checks if email contains subEmails and create new emails
 func createSubEmails(email *models.Email) {
 	if !strings.Contains(email.Body, "-----Original Message-----") {
@@ -96,13 +104,13 @@ func createSubEmails(email *models.Email) {
 	if len(subEmails) < 1 {
 		return
 	}
-	for i := 1; i < len(subEmails); i++ {
+	for subEmailIndex := 1; subEmailIndex < len(subEmails); subEmailIndex++ {
 		newEmail := models.Email{}
 		hasSubEmails := false
-		for _, line := range strings.Split(subEmails[i], "\n") {
+		for _, line := range strings.Split(subEmails[subEmailIndex], "\n") {
 			ParseLineMessage(line, &newEmail, &hasSubEmails)
 		}
-		newEmail.MessageID = email.MessageID
+		newEmail.MessageID = generateSubEmailId(subEmailIndex, email.MessageID)
 		appendEmail(&newEmail)
 	}
 	email.Body = subEmails[0]
