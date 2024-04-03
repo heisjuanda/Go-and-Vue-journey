@@ -1,67 +1,101 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+
+import Loader from "../../components/Loader.vue";
+import NotFound from "../../components/NotFound.vue";
 
 import {
   getEmailFooterDetails,
-  getParsedEmail,
+  getParsedEmailId,
   getEmailLastHeaderDetails,
 } from "../../helpers/emailDetails";
 
-import store from "../../Store";
+import getSingleEmail from "../../helpers/fetchSingleEmail";
 
 import { Source } from "../../types/emailTypes";
 
+import store from "../../Store";
+
 window.scrollTo(0, 0);
 
-const emailSheetRef = ref<HTMLElement | null>(null);
-
 const route = useRoute();
+const parsedEmailId: string | null | undefined = getParsedEmailId(route);
 
-const parsedEmail: Source | null | undefined = getParsedEmail(route);
+const emailSheetRef = ref<HTMLElement | null>(null);
+const isLoadingRef = ref<boolean>(true);
+const isErrorRef = ref<boolean>(false);
 
-const timestamp = parsedEmail?.["@timestamp"];
-const id = parsedEmail?.message_id;
+const allEmailContent = ref<Source | null | undefined>();
+const timestamp = ref<string | null | undefined>();
+const date = ref<string | null | undefined>();
+const sent = ref<string | null | undefined>();
+const dateSub = ref<string | null | undefined>();
+const subject = ref<string | null | undefined>();
+const body = ref<string | null | undefined>();
+const cc = ref<string | null | undefined>();
+const xCc = ref<string | null | undefined>();
 
-const date = parsedEmail?.date;
-const sent = parsedEmail?.sent;
-const dateSub = parsedEmail?.date_subemail;
-
-const subject = parsedEmail?.subject;
-
-const body = parsedEmail?.body;
-
-const cc = parsedEmail?.cc;
-const xCc = parsedEmail?.x_cc;
-onMounted(() => {
-  if (!emailSheetRef.value || !store?.searchedValue) return;
-  const allFields = emailSheetRef.value.querySelectorAll("p");
-  if (!allFields) return;
-  for (const field of allFields) {
-    let emailContent = field.innerHTML;
-    const regex = new RegExp(`(${store.searchedValue})`, "gi");
-    if (regex.test(emailContent)) {
-      emailContent = emailContent.replace(
-        regex,
-        `<mark class="highlight">${store.searchedValue}</mark>`
-      );
+watch([allEmailContent, emailSheetRef], () => {
+  const handleHighLightText = () => {
+    if (!emailSheetRef.value || !store?.searchedValue || !allEmailContent.value)
+      return;
+    const allFields = emailSheetRef.value.querySelectorAll("p");
+    if (!allFields) return;
+    for (const field of allFields) {
+      let emailContent = field.innerHTML;
+      const regex = new RegExp(`(${store.searchedValue})`, "gi");
+      if (regex.test(emailContent)) {
+        emailContent = emailContent.replace(
+          regex,
+          `<mark class="highlight">${store.searchedValue}</mark>`
+        );
+      }
+      field.innerHTML = emailContent;
     }
-    field.innerHTML = emailContent;
-  }
+  };
+  handleHighLightText();
+});
+
+onMounted(() => {
+  const loadEmailProps = () => {
+    if (!allEmailContent.value) {
+      isErrorRef.value = true;
+      return;
+    }
+    timestamp.value = allEmailContent.value?.["@timestamp"];
+    date.value = allEmailContent.value?.date;
+    sent.value = allEmailContent.value?.sent;
+    dateSub.value = allEmailContent.value?.date_subemail;
+    subject.value = allEmailContent.value?.subject;
+    body.value = allEmailContent.value?.body;
+    cc.value = allEmailContent.value?.cc;
+    xCc.value = allEmailContent.value?.x_cc;
+  };
+
+  const getEmail = async () => {
+    if (!parsedEmailId) return;
+    isLoadingRef.value = true;
+    allEmailContent.value = await getSingleEmail(parsedEmailId);
+    loadEmailProps();
+    isLoadingRef.value = false;
+  };
+  getEmail();
 });
 </script>
 
 <template>
   <section
+    v-if="!isLoadingRef && !isErrorRef"
     ref="emailSheetRef"
     class="email-sheet opacity-0 grid overflow-hidden pt-[20px] pl-[25px] pb-[20px] pr-[25px] mt-[5vh] mb-[5vh] mx-[auto] w-[80%] max-w-[80%] md:max-w-[650px] min-h-[120vh] bg-white"
   >
     <header
       class="flex flex-col justify-center align-center w-[80%] max-w-[80%] md:max-w-[650px]"
     >
-      <div v-if="id" class="mb-[10px]">
+      <div v-if="parsedEmailId" class="mb-[10px]">
         <p class="text-black text-[10px]">
-          {{ id }}
+          {{ parsedEmailId }}
         </p>
       </div>
 
@@ -93,7 +127,9 @@ onMounted(() => {
       </div>
 
       <div
-        v-for="(lastHeaderDetails, _) in getEmailLastHeaderDetails(parsedEmail)"
+        v-for="(lastHeaderDetails, _) in getEmailLastHeaderDetails(
+          allEmailContent
+        )"
       >
         <div
           v-if="
@@ -138,7 +174,7 @@ onMounted(() => {
 
       <div
         class="mt-[10px] flex flex-col gap-[5px]"
-        v-for="(details, _) in getEmailFooterDetails(parsedEmail)"
+        v-for="(details, _) in getEmailFooterDetails(allEmailContent)"
       >
         <div
           v-if="details?.detailValue"
@@ -156,6 +192,18 @@ onMounted(() => {
       </div>
     </footer>
   </section>
+  <div
+    v-else-if="isLoadingRef && !isErrorRef"
+    class="flex items-center justify-center h-[100dvh] w-[100vw]"
+  >
+    <Loader />
+  </div>
+  <div
+    v-else-if="isErrorRef"
+    class="flex items-center justify-center h-[100dvh] w-[100vw]"
+  >
+    <NotFound :isEmailError="isErrorRef" />
+  </div>
 </template>
 
 <style>
