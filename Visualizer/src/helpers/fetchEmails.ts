@@ -2,7 +2,7 @@ import { Root } from "../types/emailTypes";
 
 import {
   AUTHORIZATION_LEVEL,
-  ENDPOINT,
+  GET_SEARCHED_MAILS_ENDPOINT,
   METHOD_GET,
   SERVER,
   USER,
@@ -17,7 +17,7 @@ const search = async (
   orderDate: string,
   isSearching: boolean = false
 ) => {
-  const url = new URL(`${SERVER}${ENDPOINT}`);
+  const url = new URL(`${SERVER}${GET_SEARCHED_MAILS_ENDPOINT}`);
   isSearching
     ? url.searchParams.append("type", MATCH_PHRASE)
     : url.searchParams.append("type", MATCH_ALL);
