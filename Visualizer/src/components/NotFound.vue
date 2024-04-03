@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { defineModel } from "vue";
+
 import store from "../Store";
 
 import notFoundIcon from "/Icons/notFound.png";
+
+const isEmailError = defineModel<boolean>("isEmailError");
 </script>
 
 <template>
@@ -11,6 +15,9 @@ import notFoundIcon from "/Icons/notFound.png";
       :src="notFoundIcon"
       alt="404 error when searching"
     />
-    <p class="">The word: {{ store.searchedValue }} was not found</p>
+    <p class="">
+      {{ isEmailError ? "The Email" : `The word: ${store.searchedValue}` }} was
+      not found
+    </p>
   </div>
 </template>
