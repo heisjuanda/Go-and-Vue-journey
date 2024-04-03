@@ -1,22 +1,17 @@
 <script setup lang="ts">
 import { defineModel } from "vue";
 
-import { Hit } from "../types/emailTypes";
+// import { Hit } from "../types/emailTypes";
 
-const searchValue = defineModel<String>("searchTerm");
-const emailContent = defineModel<Hit>("emailContent");
-
-let emailId: string | undefined;
-if (emailContent.value?._source?.message_id) {
-  emailId = emailContent.value._source.message_id;
-}
+const searchValue = defineModel<string>("searchTerm");
+const emailContent = defineModel<string>("emailContent");
 </script>
 
 <template>
   <RouterLink
     :to="{
       name: 'email-content',
-      params: { email_id: emailId },
+      params: { email_id: emailContent },
     }"
     class="email-link"
   >
