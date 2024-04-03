@@ -40,7 +40,7 @@ func GetSingleEmailHandler(w http.ResponseWriter, request *http.Request) {
         	},
 			"sort_fields": [],
         	"from": 0,
-        	"max_results": 20,
+        	"max_results": 1,
         	"_source": []
     	}`,
 		emailId)
