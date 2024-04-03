@@ -10,7 +10,7 @@ const routes = [
     component: Home,
   },
   {
-    path: "/email/:content",
+    path: "/email/:email_id",
     name: "email-content",
     component: Email,
   },

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { defineModel } from "vue";
 
-import { Hit, Source } from "../types/emailTypes";
+import { Hit } from "../types/emailTypes";
 
 const searchValue = defineModel<String>("searchTerm");
 const emailContent = defineModel<Hit>("emailContent");
 
-let emailSource: Source | undefined;
-if (emailContent.value?._source) {
-  emailSource = emailContent.value._source;
+let emailId: string | undefined;
+if (emailContent.value?._source?.message_id) {
+  emailId = emailContent.value._source.message_id;
 }
 </script>
 
@@ -16,7 +16,7 @@ if (emailContent.value?._source) {
   <RouterLink
     :to="{
       name: 'email-content',
-      params: { content: JSON.stringify(emailSource) },
+      params: { email_id: emailId },
     }"
     class="email-link"
   >
