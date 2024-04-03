@@ -1,12 +1,12 @@
 import { RouteLocationNormalizedLoaded } from "vue-router";
 import { Source } from "../types/emailTypes";
 
-export const getParsedEmail = (route: RouteLocationNormalizedLoaded) => {
-  let content: string | string[] = route.params.content;
+export const getParsedEmailId = (route: RouteLocationNormalizedLoaded) => {
+  let content: string | string[] = route.params.email_id;
   if (Array.isArray(content)) {
     content = content.join(" ");
   }
-  return JSON.parse(content);
+  return content;
 };
 
 export const getEmailFooterDetails = (
