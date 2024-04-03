@@ -13,6 +13,7 @@ func main() {
 	router := chi.NewRouter()
 
 	router.Get("/"+constants.SEARCH_ENDPOINT, helpers.SearchHandler)
+	router.Get("/"+constants.SINGLE_MAIL_ENDPOINT, helpers.GetSingleEmailHandler)
 	handler := helpers.SetCorsProtocol(router)
 
 	initText := fmt.Sprintf("Server started on :%s", constants.SEARCH_SERVER_PORT)
