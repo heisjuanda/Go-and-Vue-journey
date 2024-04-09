@@ -23,6 +23,7 @@ const handleChangeOrder = () => {
       :onclick="handleChangeOrder"
       class="text-white bg-[#535C91] hover:bg-blue-800 active:scale-110 transition-[0.3s] font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2 dark:bg-[#535C91] dark:hover:bg-blue-700"
     >
+      <span class="ml-[2px] mr-[10px]">Date</span>
       <img
         :class="`w-[18px] transition-[0.25s] transform ${
           store.order ? 'rotate-180' : 'rotate-0'
