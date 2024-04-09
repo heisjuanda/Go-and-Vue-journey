@@ -14,4 +14,4 @@ COPY . .
 
 RUN go build -o Back .
 
-CMD ["./zincSearchIndexer/zincsearch", "/app/Back"]
+CMD ["/app/Back"]

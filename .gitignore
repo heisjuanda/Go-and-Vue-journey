@@ -22,6 +22,10 @@ dist-ssr
 *.sln
 *.sw?
 
+.terraform
+terraform.tf
+terraform.*
+
 # Indexer
 Indexer/enron_mail_20110402
 Indexer/zincSearchIndexer
