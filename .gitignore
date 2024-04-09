@@ -22,9 +22,12 @@ dist-ssr
 *.sln
 *.sw?
 
-.terraform
+.terraform*
+terraform*
 terraform.tf
-terraform.*
+terraform.s*
+terraform.tfstate
+.terraform.lock.hcl
 
 # Indexer
 Indexer/enron_mail_20110402

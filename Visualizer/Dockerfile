@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:18.17.1-alpine
 
 RUN npm install -g http-server
 
@@ -6,7 +6,7 @@ RUN mkdir /app
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY ./package*.json ./
 
 ENV VITE_EMAIL_INDEXER_USER=admin
 ENV VITE_EMAIL_INDEXER_PASSWORD=Complexpass#123
@@ -16,8 +16,6 @@ RUN npm install
 COPY . .
 
 RUN npm run build
-
-EXPOSE 5173
 
 CMD [ "http-server", "dist" ]
 
