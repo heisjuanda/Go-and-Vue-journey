@@ -1,7 +1,7 @@
 provider "aws" {
   region     = "us-east-1"
-  access_key = "AKIA47CRW7ZHZKD5FDWL"
-  secret_key = "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"
+  access_key = ""
+  secret_key = ""
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -67,7 +67,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
-  
+
   tags = {
     Name = "web-server"
   }
