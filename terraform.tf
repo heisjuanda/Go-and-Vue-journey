@@ -9,7 +9,6 @@ resource "aws_security_group" "ec2_sg" {
   description = "aws security group ec2 sg"
 
   ingress {
-    description = "search-client access"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -17,7 +16,6 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   ingress {
-    description = "ssh access"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -25,7 +23,6 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   ingress {
-    description = "search-api access"
     from_port   = 8080
     to_port     = 8080
     protocol    = "tcp"
