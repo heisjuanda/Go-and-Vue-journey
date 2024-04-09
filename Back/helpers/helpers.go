@@ -109,6 +109,9 @@ func SearchHandler(w http.ResponseWriter, request *http.Request) {
 	}
 
 	searchTerm := request.URL.Query().Get("term")
+	if strings.Contains(searchTerm, `"`) {
+		searchTerm = strings.ReplaceAll(searchTerm, `"`, `'`)
+	}
 
 	page := request.URL.Query().Get("page")
 	if page == "" || page == "0" {
